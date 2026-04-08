@@ -20,7 +20,15 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.execute("CREATE TYPE reservation_status AS ENUM ('active', 'confirmed', 'cancelled', 'expired')")
+    op.execute(
+        """
+        DO $$ BEGIN
+            CREATE TYPE reservation_status AS ENUM ('active', 'confirmed', 'cancelled', 'expired');
+        EXCEPTION
+            WHEN duplicate_object THEN NULL;
+        END $$;
+        """
+    )
 
     op.create_table(
         "products",
@@ -38,7 +46,14 @@ def upgrade() -> None:
         sa.Column("product_id", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column(
             "status",
-            sa.Enum("active", "confirmed", "cancelled", "expired", name="reservation_status"),
+            postgresql.ENUM(
+                "active",
+                "confirmed",
+                "cancelled",
+                "expired",
+                name="reservation_status",
+                create_type=False,
+            ),
             nullable=False,
         ),
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.text("now()"), nullable=False),
@@ -116,5 +131,5 @@ def downgrade() -> None:
     op.drop_table("reservations")
 
     op.drop_table("products")
-    op.execute("DROP TYPE reservation_status")
+    op.execute("DROP TYPE IF EXISTS reservation_status")
 

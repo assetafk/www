@@ -2,8 +2,13 @@ from __future__ import annotations
 
 import os
 from logging.config import fileConfig
+from pathlib import Path
+
+from dotenv import load_dotenv
 
 from alembic import context
+
+load_dotenv(Path(__file__).resolve().parent.parent / "app" / ".env")
 from sqlalchemy import engine_from_config, pool
 
 from app.db import Base

@@ -54,6 +54,27 @@ def configure_logging(level: str) -> None:
     root.addHandler(handler)
 
 
+def log_request_unhandled_exception(
+    *,
+    request_id: str,
+    method: str,
+    path: str,
+    exc: Exception,
+) -> None:
+    logging.getLogger("http").exception(
+        json.dumps(
+            {
+                "event_type": "request_unhandled_exception",
+                "request_id": request_id,
+                "method": method,
+                "path": path,
+            },
+            ensure_ascii=False,
+        ),
+        exc_info=exc,
+    )
+
+
 def log_structured_event(
     *,
     event_type: str,
