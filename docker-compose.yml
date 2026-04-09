@@ -2,13 +2,13 @@ services:
   db:
     image: postgres:16
     environment:
-      POSTGRES_DB: flashsale
-      POSTGRES_USER: flashsale
-      POSTGRES_PASSWORD: flashsale
+      POSTGRES_DB: ${POSTGRES_DB:-flashsale}
+      POSTGRES_USER: ${POSTGRES_USER:-flashsale}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-flashsale}
     ports:
-      - "5432:5432"
+      - "54320:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U flashsale -d flashsale"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-flashsale} -d ${POSTGRES_DB:-flashsale}"]
       interval: 5s
       timeout: 3s
       retries: 20
@@ -25,13 +25,18 @@ services:
 
   api:
     build: .
+    env_file:
+      - .env
     environment:
-      DATABASE_URL: postgresql+psycopg2://flashsale:flashsale@db:5432/flashsale
-      REDIS_URL: redis://redis:6379/0
-      RESERVATION_TTL_SECONDS: "300"
-      LOG_LEVEL: INFO
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg2://flashsale:flashsale@db:5432/flashsale}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      RESERVATION_TTL_SECONDS: ${RESERVATION_TTL_SECONDS:-300}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
     ports:
       - "8000:8000"
+    command: >
+      bash -lc "alembic upgrade head &&
+      uvicorn app.main:app --host 0.0.0.0 --port 8000"
     depends_on:
       db:
         condition: service_healthy

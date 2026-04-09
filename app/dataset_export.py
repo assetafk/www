@@ -12,7 +12,7 @@ from uuid import UUID
 from sqlalchemy import and_, select
 from sqlalchemy.orm import Session
 
-from app.models import StructuredEventRow, TrainDatasetCursor
+from app.db.models import StructuredEventRow, TrainDatasetCursor
 
 FINAL_EVENT_TYPES: set[str] = {
     "reservation_confirmed",

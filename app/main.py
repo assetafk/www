@@ -4,10 +4,10 @@ import logging
 
 from fastapi import FastAPI
 
-from app.exception_handlers import register_exception_handlers
-from app.logging import configure_logging
-from app.routers import router as api_router
-from app.settings import get_settings
+from app.api.router import router as api_router
+from app.core.exception_handlers import register_exception_handlers
+from app.core.logging import configure_logging
+from app.core.settings import get_settings
 
 
 def create_app() -> FastAPI:

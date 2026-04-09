@@ -8,11 +8,13 @@ from dotenv import load_dotenv
 
 from alembic import context
 
-load_dotenv(Path(__file__).resolve().parent.parent / "app" / ".env")
+_ROOT = Path(__file__).resolve().parent.parent
+load_dotenv(_ROOT / ".env")
+load_dotenv(_ROOT / "app" / ".env")
 from sqlalchemy import engine_from_config, pool
 
-from app.db import Base
-from app.models import (  # noqa: F401
+from app.db.session import Base
+from app.db.models import (  # noqa: F401
     OutboxEvent,
     Product,
     Reservation,

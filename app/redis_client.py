@@ -4,7 +4,7 @@ from functools import lru_cache
 
 from redis import Redis
 
-from app.settings import get_settings
+from app.core.settings import get_settings
 
 
 @lru_cache(maxsize=1)

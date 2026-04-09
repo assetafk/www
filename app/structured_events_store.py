@@ -5,8 +5,8 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
-from app.logging import StructuredEvent
-from app.models import StructuredEventRow
+from app.core.logging import StructuredEvent
+from app.db.models import StructuredEventRow
 
 
 def try_persist_structured_event(db: Session, event: StructuredEvent) -> None:
